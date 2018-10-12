@@ -1,0 +1,20 @@
+{
+  "name": "hotel_mngmnt_rest",
+  "version": "1.0.0",
+  "description": "Hotel Management Project",
+  "main": "server.js",
+  "scripts": {
+    "test": "npm start",
+    "start": "server.js"
+  },
+  "keywords": [
+    "projecttomanagethehotel"
+  ],
+  "author": "Rahul",
+  "license": "ISC",
+  "dependencies": {
+    "body-parser": "^1.18.3",
+    "express": "^4.16.3",
+    "mongoose": "^5.3.2"
+  }
+}
