@@ -30,7 +30,7 @@ let hotelsSchema = new Schema({
     rooms: [roomsSchema],
     location: locationSchema,
     reviews: [reviewsShema],
-    services: [String]
+    services: [String],
 });
 
 module.exports = mongoose.model("Hotel", hotelsSchema, "hotel.hoteldata");

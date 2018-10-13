@@ -1,5 +1,6 @@
 const mongoose = require("mongoose");
 let Hotel = mongoose.model("Hotel");
+let User = mongoose.model("User");
 
 module.exports.getHotels = (req, res, next) => {
     let offset = 0;
@@ -75,8 +76,11 @@ module.exports.addOneHotel = (req, res, next) => {
             stars: req.body.stars,
             "location.address": req.body.address,
             reviews: req.body.reviews,
-            services: [req.body.services]
+            services: [req.body.services],
+            "rooms": [{ price: req.body.price }]
         });
+        // newHotel.rooms.push(req.body.price);
+
         newHotel
             .save((error, response) => {
                 if (error) {
@@ -130,31 +134,136 @@ module.exports.updateOneHotel = (req, res, next) => {
         });
 };
 
-module.exports.oneReviewOneHotel = (req, res, next)=>{
+module.exports.allReviewsForOneHotel = (req, res, next) => {
     let hotelId = req.params.hotelId;
     Hotel
-    .findById(hotelId, {"reviews":true})
-    // .select("reviews")
-    .exec(function(error, reviews){
-        if(error){
-            res
-            .status(404)
-            .json({
-                message:"Hotel Not Found",
-                error:error
-            });
-        }else{
-            let findReview = reviews.reviews.find(function(element){
-                if(element.id === req.params.reviewId || element._id === req.params.reviewId){
-                    console.log(element.review);
-                    return element.review;
+        .findById(hotelId)
+        .select("reviews")
+        .exec(function (error, reviews) {
+            // console.log(reviews);
+            // console.log(hotelId);
+            if (error) {
+                res
+                    .status(404)
+                    .set("application/json")
+                    .json({
+                        message: "HotelId is not correct",
+                        error: error
+                    });
+            } else {
+                if (reviews === null) {
+                    res
+                        .status(404)
+                        .set("application/json")
+                        .json({
+                            message: "'Reviews' Field is not present in the given Hotel"
+                        });
+                } else {
+                    let allReviews = [];
+                    for (let index = 0; index < reviews.reviews.length; index++) {
+                        allReviews.push(reviews.reviews[index].review);
+                    }
+                    res
+                        .status(200)
+                        .set("application/json")
+                        .json(allReviews);
                 }
-            });
-            
-            // let findReview = reviews.reviews.id(req.params.reviewId);
+            }
+        });
+};
+
+module.exports.oneReviewOneHotel = (req, res, next) => {
+    let hotelId = req.params.hotelId;
+    Hotel
+        .findById(hotelId, { "reviews": true })
+        // .select("reviews")
+        .exec(function (error, reviews) {
+            if (error) {
+                res
+                    .status(404)
+                    .json({
+                        message: "Hotel Not Found",
+                        error: error
+                    });
+            } else {
+                let findReview = reviews.reviews.find(function (element) {
+                    if (element.id === req.params.reviewId || element._id === req.params.reviewId) {
+                        console.log(element.review);
+                        return element.review;
+                    }
+                });
+
+                // let findReview = reviews.reviews.id(req.params.reviewId);
+                res
+                    .status(200)
+                    .json(findReview);
+            }
+        });
+};
+
+module.exports.bookHotel = async function (req, res, next) {
+    let userId = req.params.userId;
+    let hotelId = req.params.hotelId;
+    // let addHotelInUser = {};
+
+    findOneHotel(hotelId).then((data) => {
+        let addHotelInUser = {
+            $push: {
+                "bookHistory": [{
+                    hotelId: data._id,
+                    hotelName: data.name,
+                    hotelAddress: data.location.address,
+                    price: data.rooms[0].price,
+                    checkIn: Date.now(),
+                    checkOut: Date.now()
+                }]
+            }
+        };
+        if (userId) {
+            User
+                .findByIdAndUpdate(userId, addHotelInUser)
+                .exec((error, user) => {
+                    if (error) {
+                        console.log(userId);
+                        res
+                            .status(500)
+                            .set("application/json")
+                            .json({
+                                message: "User with this user ID not found || Internal Server Error",
+                                error: error
+                            });
+                    } else {
+                        if (!hotelId) {
+                            res
+                                .status(400)
+                                .set("application/json")
+                                .json({
+                                    message: "Hotel ID not entered"
+                                });
+                        } else {
+                            console.log(addHotelInUser);
+                            res
+                                .status(200)
+                                .set("application/json")
+                                .json({
+                                    message: "Hotel Booked Successfully",
+                                });
+                        }
+                    }
+                });
+        } else {
             res
-            .status(200)
-            .json(findReview);
+                .status(400)
+                .set("application/json")
+                .json({
+                    message: "User ID not entered"
+                });
         }
     });
+};
+
+let findOneHotel = async (hotelId) => {
+    let hotel = await Hotel
+        .findById(hotelId)
+    return hotel;
 };

@@ -19,7 +19,15 @@ router
     .put(hotelCtrl.updateOneHotel);
 
 router
+    .route("/hotel/:hotelId/reviews")
+    .get(hotelCtrl.allReviewsForOneHotel);
+
+router
     .route("/hotel/:hotelId/reviews/:reviewId")
     .get(hotelCtrl.oneReviewOneHotel);
+
+router
+    .route("/bookhotel/:userId/:hotelId")
+    .get(hotelCtrl.bookHotel);
 
 module.exports = router;
