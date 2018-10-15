@@ -1,11 +1,13 @@
 require("./app/models/db.conn");
 const express = require("express");
 let app = express();
+const log4js = require("log4js");
 const hotelRoutes = require("./app/routes/hotel.routes");
 const userRoutes = require("./app/routes/user.routes");
 const bodyParser = require("body-parser");
 
 const CONFIG = require("./app/config");
+log4js.configure("./app/config/log.json");
 
 app.use(bodyParser.urlencoded({extended:false}));
 app.use(bodyParser.json({type:"application/json"}));

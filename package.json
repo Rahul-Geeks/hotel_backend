@@ -13,8 +13,10 @@
   "author": "Rahul",
   "license": "ISC",
   "dependencies": {
+    "bcrypt": "^3.0.1",
     "body-parser": "^1.18.3",
     "express": "^4.16.3",
+    "log4js": "^3.0.6",
     "mongoose": "^5.3.2"
   }
 }

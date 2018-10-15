@@ -1,0 +1,27 @@
+{
+    "appenders": {
+        "app": {
+            "type": "file",
+            "filename": "app.log"
+        },
+        "users": {
+            "type": "file",
+            "filename":"users.log"
+        },
+        "access": {
+            "type": "file",
+            "filename": "access.log",
+            "category": "user"
+        }
+    },
+    "categories": {
+        "default": {
+            "appenders": ["app", "users"],
+            "level": "trace"
+        },
+        "user":{
+            "appenders":["users"],
+            "level": "debug"
+        }
+    }
+}

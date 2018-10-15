@@ -14,6 +14,7 @@ module.exports.getUsers = (req, res, next) => {
                         error: error
                     });
             } else {
+                // console.log(users);
                 res
                     .status(200)
                     .set("application/json")
@@ -40,6 +41,7 @@ module.exports.getOneUser = (req, res, next) => {
                             error: error
                         });
                 } else {
+                    // console.log(user);
                     res
                         .status(200)
                         .set("application/json")
