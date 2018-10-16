@@ -1,27 +1,57 @@
 {
     "appenders": {
-        "app": {
-            "type": "file",
-            "filename": "app.log"
-        },
         "users": {
             "type": "file",
-            "filename":"users.log"
+            "filename": "logs/users.log"
+        },
+        "hotels": {
+            "type": "file",
+            "filename": "logs/hotels.log"
         },
         "access": {
+            "type": "dateFile",
+            "filename": "logs/access.log",
+            "pattern": "-yyyy-MM-dd",
+            "maxLogSize": 10240,
+            "category": "http"
+        },
+        "app": {
             "type": "file",
-            "filename": "access.log",
-            "category": "user"
+            "filename": "logs/app.log",
+            "pattern": "-yyyy-MM-dd",
+            "maxLogSize": 10240,
+            "numbackups": 3
+        },
+        "errorFile": {
+            "type": "file",
+            "filename": "logs/error.log"
+        },
+        "error": {
+            "type": "logLevelFilter",
+            "appender": "errorFile",
+            "level": "ERROR"
+        },
+        "startup": {
+            "type": "file",
+            "level": "ERROR"
         }
     },
     "categories": {
         "default": {
-            "appenders": ["app", "users"],
+            "appenders": [
+                "app",
+                "users",
+                "error",
+                "errorFile",
+                "startup"
+            ],
             "level": "trace"
         },
-        "user":{
-            "appenders":["users"],
-            "level": "debug"
+        "http": {
+            "appenders": [
+                "access"
+            ],
+            "level": "info"
         }
     }
 }

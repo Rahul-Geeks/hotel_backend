@@ -2,6 +2,11 @@ const mongoose = require("mongoose");
 let Hotel = mongoose.model("Hotel");
 let User = mongoose.model("User");
 
+const log4js = require("log4js");
+let errorLogger = log4js.getLogger("errorFile");
+let accessLogger = log4js.getLogger("access");
+let hotelsLogger = log4js.getLogger("hotels");
+
 module.exports.getHotels = (req, res, next) => {
     let offset = 0;
     let count = 5;
@@ -16,17 +21,19 @@ module.exports.getHotels = (req, res, next) => {
         // .skip(offset).limit(count)
         .exec(function (error, hotels) {
             if (error) {
-                console.log(error);
+                // console.log(error);
                 res
                     .status(404)
                     .json({
                         message: "Hotels Record Not Found",
                         error: error
                     });
+                errorLogger.error("Hotels Record Not Found");
             } else {
                 res
                     .status(200)
                     .json(hotels);
+                accessLogger.info("Hotel Records Are Found");
             }
         });
 };
@@ -45,10 +52,12 @@ module.exports.getOneHotel = (req, res, next) => {
                         .json({
                             message: "Requested Hotel Not Found"
                         });
+                    errorLogger.error("Requested Hotel Not Found");
                 } else {
                     res
                         .status(200)
                         .json(hotel);
+                    accessLogger.info("Requested Hotel Found");
                 }
             });
     } else {
@@ -57,6 +66,7 @@ module.exports.getOneHotel = (req, res, next) => {
             .json({
                 message: "Request params does not contain any hotelId to search for"
             });
+        errorLogger.error("Request params does not contain any hotelId to search for");
     }
 };
 
@@ -90,10 +100,12 @@ module.exports.addOneHotel = (req, res, next) => {
                             message: "Internal Server Error",
                             error: error
                         });
+                    errorLogger.error("Internal Server Error");
                 } else {
                     res
                         .status(200)
                         .json(response);
+                    hotelsLogger.info("Hotel Added Successfully");
                 }
             });
     } else {
@@ -102,6 +114,7 @@ module.exports.addOneHotel = (req, res, next) => {
             .json({
                 message: "Required Fields are not passed in request body"
             });
+        errorLogger.error("Required Fields are not passed in request body");
     }
 };
 
@@ -124,12 +137,14 @@ module.exports.updateOneHotel = (req, res, next) => {
                         message: "The hotel document update FAILED",
                         error: error
                     });
+                errorLogger.error("The hotel document update FAILED");
             } else {
                 res
                     .status(200)
                     .json({
                         message: "The hotel document is updated successfully"
                     });
+                hotelsLogger.info("The hotel document is updated successfully");
             }
         });
 };
@@ -150,6 +165,7 @@ module.exports.allReviewsForOneHotel = (req, res, next) => {
                         message: "HotelId is not correct",
                         error: error
                     });
+                errorLogger.error("HotelId is not correct");
             } else {
                 if (reviews === null) {
                     res
@@ -158,6 +174,7 @@ module.exports.allReviewsForOneHotel = (req, res, next) => {
                         .json({
                             message: "'Reviews' Field is not present in the given Hotel"
                         });
+                    errorLogger.error("'Reviews' Field is not present in the given Hotel");
                 } else {
                     let allReviews = [];
                     for (let index = 0; index < reviews.reviews.length; index++) {
@@ -167,6 +184,7 @@ module.exports.allReviewsForOneHotel = (req, res, next) => {
                         .status(200)
                         .set("application/json")
                         .json(allReviews);
+                    hotelsLogger.info("All reviews for one hotel found successfully");
                 }
             }
         });
@@ -185,6 +203,7 @@ module.exports.oneReviewOneHotel = (req, res, next) => {
                         message: "Hotel Not Found",
                         error: error
                     });
+                errorLogger.error("Hotel Not Found");
             } else {
                 let findReview = reviews.reviews.find(function (element) {
                     if (element.id === req.params.reviewId || element._id === req.params.reviewId) {
@@ -197,11 +216,13 @@ module.exports.oneReviewOneHotel = (req, res, next) => {
                 res
                     .status(200)
                     .json(findReview);
+                hotelsLogger.info("One review successfully found for one hotel");
             }
         });
 };
 
 module.exports.bookHotel = async function (req, res, next) {
+
     let userId = req.params.userId;
     let hotelId = req.params.hotelId;
     // let addHotelInUser = {};
@@ -232,6 +253,7 @@ module.exports.bookHotel = async function (req, res, next) {
                                 message: "User with this user ID not found || Internal Server Error",
                                 error: error
                             });
+                        errorLogger.error("User with this user ID not found || Internal Server Error");
                     } else {
                         if (!hotelId) {
                             res
@@ -240,6 +262,7 @@ module.exports.bookHotel = async function (req, res, next) {
                                 .json({
                                     message: "Hotel ID not entered"
                                 });
+                            errorLogger.error("Hotel ID not entered");
                         } else {
                             console.log(addHotelInUser);
                             res
@@ -248,6 +271,7 @@ module.exports.bookHotel = async function (req, res, next) {
                                 .json({
                                     message: "Hotel Booked Successfully",
                                 });
+                            hotelsLogger.info("Hotel Booked Successfully");
                         }
                     }
                 });
@@ -258,6 +282,7 @@ module.exports.bookHotel = async function (req, res, next) {
                 .json({
                     message: "User ID not entered"
                 });
+            errorLogger.error("User ID not entered");
         }
     });
 };

@@ -1,7 +1,7 @@
 const express = require("express");
 let router = express.Router();
 const hotelCtrl = require("../controllers/hotel.controller");
-
+const authCtrl = require("../controllers/auth.controller");
 router
     .route("/hotels")
     .get(hotelCtrl.getHotels);
@@ -28,6 +28,6 @@ router
 
 router
     .route("/bookhotel/:userId/:hotelId")
-    .get(hotelCtrl.bookHotel);
+    .post(authCtrl.tokenValidator, hotelCtrl.bookHotel);
 
 module.exports = router;

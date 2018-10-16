@@ -9,6 +9,8 @@ let dbPwd = "password";
 let dbName = "hotel";
 let dbAuthSrc = "admin";
 
+let scrtKey = "Thisisrahulchouhanjwt";
+
 module.exports = {
     HOST: host,
     PORT: port,
@@ -16,5 +18,6 @@ module.exports = {
     DBUSR: dbUsr,
     DBPWD: dbPwd,
     DBNAME: dbName,
-    DBAUTHSRC: dbAuthSrc
+    DBAUTHSRC: dbAuthSrc,
+    SCRTKEY: scrtKey
 };
