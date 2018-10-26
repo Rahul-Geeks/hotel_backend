@@ -13,7 +13,7 @@ module.exports.getHotels = (req, res, next) => {
     if (req.query && req.query.offset) {
         offset = req.query.offset;
     }
-    if (req.query && req.query.count) {
+    if (req.query && req.query.count) { 
         count = req.query.count;
     }
     Hotel

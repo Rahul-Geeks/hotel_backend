@@ -8,8 +8,7 @@ const bodyParser = require("body-parser");
 const fs = require("fs");
 
 const CONFIG = require("./app/config");
-
-log4js.configure("./app/config/log.json");
+// log4js.configure("./app/config/log.json");
 let startupLogger = log4js.getLogger("startup");
 let errorLogger = log4js.getLogger("errorFile");
 
