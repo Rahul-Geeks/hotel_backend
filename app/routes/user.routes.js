@@ -13,10 +13,10 @@ router
 
 router
     .route("/user/register")
-    .post(authCtrl.registration);
+    .post(authCtrl.registration, authCtrl.tokenValidator);
 
 router
     .route("/user/login")
-    .post(authCtrl.login);
+    .post(authCtrl.login, authCtrl.tokenValidator);
 
 module.exports = router;

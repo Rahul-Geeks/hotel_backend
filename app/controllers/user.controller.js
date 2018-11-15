@@ -5,7 +5,7 @@ module.exports.getUsers = (req, res, next) => {
     User
         .find()
         .exec((error, users) => {
-            if (error) {
+            if (error) {  
                 res
                     .status(500)
                     .set("application/json")

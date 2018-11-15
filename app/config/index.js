@@ -3,7 +3,7 @@ let host = "127.0.0.1";
 let port = 3030;
 
 //mongodb
-let dbUrl = "mongodb://192.168.1.70:27017/hotel";
+let dbUrl = "mongodb://192.168.1.20:27017/hotel";
 let dbUsr = "Rahul";
 let dbPwd = "password";
 let dbName = "hotel";

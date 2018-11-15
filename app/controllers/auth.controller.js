@@ -68,20 +68,29 @@ module.exports.registration = (req, res, next) => {
                 newUser
                     .save((error, user) => {
                         if (error) {
+                            console.log(error);
                             res
                                 .status(500)
                                 .set("apllication/json")
                                 .json({
-                                    message: "User Not Saved || Internal Server Error"
+                                    message: "User Not Saved || Internal Server Error",
+                                    auth: false
                                 });
-                                errorLogger.error("User Not Saved || Internal Server Error");
+                            errorLogger.error("User Not Saved || Internal Server Error");
                         } else {
+                            let token = webToken.sign({
+                                _id: user._id
+                            }, CONFIG.SCRTKEY, {
+                                    expiresIn: 3600
+                                });
                             res
                                 .status(200)
                                 .set("apllication/json")
                                 .json({
                                     message: "User Registered Successfully",
-                                    user: user
+                                    user: user,
+                                    auth: true,
+                                    token: token
                                 });
                         }
                     });

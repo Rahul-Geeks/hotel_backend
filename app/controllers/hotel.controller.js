@@ -11,17 +11,17 @@ module.exports.getHotels = (req, res, next) => {
     let offset = 0;
     let count = 5;
     if (req.query && req.query.offset) {
-        offset = req.query.offset;
+        offset = parseInt(req.query.offset, 10);
     }
-    if (req.query && req.query.count) { 
-        count = req.query.count;
+    if (req.query && req.query.count) {
+        count = parseInt(req.query.count, 10);
     }
     Hotel
         .find()
-        // .skip(offset).limit(count)
+        .skip(offset).limit(count)
         .exec(function (error, hotels) {
             if (error) {
-                // console.log(error);
+                console.log(error);
                 res
                     .status(404)
                     .json({
@@ -87,7 +87,8 @@ module.exports.addOneHotel = (req, res, next) => {
             "location.address": req.body.address,
             reviews: req.body.reviews,
             services: [req.body.services],
-            "rooms": [{ price: req.body.price }]
+            "rooms": [{ price: req.body.price }],
+            password: req.body.password
         });
         // newHotel.rooms.push(req.body.price);
 
@@ -292,3 +293,22 @@ let findOneHotel = async (hotelId) => {
         .findById(hotelId)
     return hotel;
 };
+
+module.exports.filterHotelsWithRating = (req, res, next) => {
+    let star = req.query.star;
+    Hotel
+        .find({ stars: star })
+        .exec((error, hotels) => {
+            if(error){
+                res
+                .status(404)
+                .set("application/json")
+                .json(error);
+            }else{
+                res
+                .status(200)
+                .set("applicaton/json")
+                .json(hotels);
+            }
+        });
+}

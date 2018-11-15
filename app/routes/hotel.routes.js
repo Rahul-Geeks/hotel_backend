@@ -4,7 +4,11 @@ const hotelCtrl = require("../controllers/hotel.controller");
 const authCtrl = require("../controllers/auth.controller");
 router
     .route("/hotels")
-    .get(hotelCtrl.getHotels);
+    .get(authCtrl.tokenValidator, hotelCtrl.getHotels);
+
+router
+    .route("/hotels/filterhotelswithrating")
+    .get(hotelCtrl.filterHotelsWithRating);
 
 router
     .route("/hotel/:hotelId")
@@ -12,7 +16,7 @@ router
 
 router
     .route("/hotel/new")
-    .post(hotelCtrl.addOneHotel);
+    .post(authCtrl.tokenValidator, hotelCtrl.addOneHotel);
 
 router
     .route("/hotel/:hotelId")
