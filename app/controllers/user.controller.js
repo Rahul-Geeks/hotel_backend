@@ -1,15 +1,17 @@
+var dbcon=require('../models/db.conn')
 const mongoose = require("mongoose");
 let User = mongoose.model("User");
 
-module.exports.getUsers = (req, res, next) => {
+module.exports.getUsers = (req, res) => {
     User
         .find()
         .exec((error, users) => {
+            console.log("users----",users)
             if (error) {  
                 res
                     .status(500)
                     .set("application/json")
-                    .res({
+                    .json({
                         message: "Internal Server Error",
                         error: error
                     });

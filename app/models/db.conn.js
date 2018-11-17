@@ -1,16 +1,16 @@
 const mongoose = require("mongoose");
-const CONFIG = require("../config");
+const CONFIG = require("../config/index");
 require("./hotel.model");
 require("./user.model");
 
-let OPTIONS = {
-    // user: CONFIG.DBUSR,
-    // pwd: CONFIG.DBPWD,
-    authSource: CONFIG.DBAUTHSRC,
+let options = {
+    user: CONFIG.DBUSR,
+    pass: CONFIG.DBPWD,
+    authSource: CONFIG.authSource,
     useNewUrlParser: true
 };
 
-mongoose.connect(CONFIG.DBURL, OPTIONS);
+mongoose.connect(CONFIG.DBURL, options);
 let _conn = mongoose.connection;
 
 _conn.on("error", function (error) {
